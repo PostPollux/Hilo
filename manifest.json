@@ -1,0 +1,10 @@
+{
+  "id": "hilo",
+  "name": "Hilo",
+  "version": "0.1.0",
+  "minAppVersion": "1.5.0",
+  "description": "Multi-color highlights using Obsidian's native ==text== syntax.",
+  "author": "San",
+  "authorUrl": "https://github.com/san-tekart",
+  "isDesktopOnly": false
+}

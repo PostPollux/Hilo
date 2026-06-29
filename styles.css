@@ -1,0 +1,48 @@
+.od-color-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+.od-color-row .od-slug-input {
+  flex: 1;
+  min-width: 120px;
+}
+.od-color-row .od-hex-input {
+  width: 90px;
+}
+.od-color-row .od-color-picker {
+  width: 32px;
+  padding: 0;
+}
+.od-color-row input.is-invalid {
+  outline: 2px solid var(--text-error);
+}
+.od-color-row button.od-arrow:disabled {
+  opacity: 0.4;
+}
+.od-color-row .od-hotkey {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--background-modifier-hover);
+  font-family: var(--font-monospace);
+  font-size: 0.85em;
+  color: var(--text-normal);
+  min-width: 60px;
+  text-align: center;
+}
+.od-color-row .od-hotkey-empty {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+.od-color-row .od-hotkey-button {
+  padding: 2px 6px;
+}
+
+body.od-style-lowlight mark[class*="hl-"],
+body.od-style-lowlight .cm-highlight [class*="hl-"],
+body.od-style-lowlight span[class*="hl-"] {
+  color: var(--text-normal);
+  box-shadow: inset 0 -0.2em 0 var(--od-underline, currentColor);
+}
