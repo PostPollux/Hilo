@@ -69,7 +69,7 @@
 2. "Hilo" 검색 → Install → Enable
 
 ### 수동 설치
-1. [Releases](https://github.com/<user>/obsidian-hilo/releases) 페이지에서 최신 버전 다운로드
+1. [Releases](https://github.com/opellen/Hilo/releases) 페이지에서 최신 버전 다운로드
 2. `main.js`, `manifest.json`, `styles.css`를 vault의 `.obsidian/plugins/hilo/` 폴더에 복사
 3. 옵시디언 설정 → Community plugins에서 Hilo 활성화
 

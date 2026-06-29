@@ -69,7 +69,7 @@ Assign hotkeys in **Settings → Hotkeys**. Each color row in **Settings → Hil
 2. Search for "Hilo" → **Install** → **Enable**
 
 ### Manual install
-1. Download the latest release from the [Releases](https://github.com/san-tekart/obsidian-hilo/releases) page
+1. Download the latest release from the [Releases](https://github.com/opellen/Hilo/releases) page
 2. Copy `main.js`, `manifest.json`, and `styles.css` into your vault's `.obsidian/plugins/hilo/` folder
 3. Enable **Hilo** under **Settings → Community plugins**
 
