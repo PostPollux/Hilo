@@ -64,7 +64,7 @@ Assign hotkeys in **Settings → Hotkeys**. Each color row in **Settings → Hil
 
 ## Installation
 
-### Obsidian Community Plugins (coming soon)
+### Obsidian Community Plugins
 1. **Settings → Community plugins → Browse**
 2. Search for "Hilo" → **Install** → **Enable**
 

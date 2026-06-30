@@ -64,7 +64,7 @@
 
 ## 설치
 
-### 옵시디언 커뮤니티 플러그인 (예정)
+### 옵시디언 커뮤니티 플러그인
 1. 설정 → Community plugins → Browse
 2. "Hilo" 검색 → Install → Enable
 
