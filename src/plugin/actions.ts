@@ -48,7 +48,7 @@ export function wrapWithColor(editor: Editor, color: string): void {
 		const selection = editor.getSelection();
 		if (!selection) return;
 		STRIP_RE.lastIndex = 0;
-		const stripped = selection.replace(STRIP_RE, (_, eq, mk) => eq ?? mk ?? '');
+		const stripped = selection.replace(STRIP_RE, (_match: string, eq: string | undefined, mk: string | undefined): string => eq ?? mk ?? '');
 		editor.replaceSelection(wrapHighlight(color, stripped));
 		return;
 	}
@@ -111,7 +111,7 @@ export function wrapWithColor(editor: Editor, color: string): void {
 
 	const expanded = lineText.slice(finalStart, finalEnd);
 	STRIP_RE.lastIndex = 0;
-	const stripped = expanded.replace(STRIP_RE, (_, eq, mk) => eq ?? mk ?? '');
+	const stripped = expanded.replace(STRIP_RE, (_match: string, eq: string | undefined, mk: string | undefined): string => eq ?? mk ?? '');
 	editor.replaceRange(
 		wrapHighlight(color, stripped),
 		{ line, ch: finalStart },
@@ -207,7 +207,7 @@ export function unhighlightSelection(editor: Editor): void {
 		const selection = editor.getSelection();
 		if (!selection) return;
 		STRIP_RE.lastIndex = 0;
-		const stripped = selection.replace(STRIP_RE, (_, eq, mk) => eq ?? mk ?? '');
+		const stripped = selection.replace(STRIP_RE, (_match: string, eq: string | undefined, mk: string | undefined): string => eq ?? mk ?? '');
 		if (stripped !== selection) editor.replaceSelection(stripped);
 		return;
 	}
@@ -237,7 +237,7 @@ export function unhighlightSelection(editor: Editor): void {
 
 	const expanded = lineText.slice(finalStart, finalEnd);
 	STRIP_RE.lastIndex = 0;
-	const stripped = expanded.replace(STRIP_RE, (_, eq, mk) => eq ?? mk ?? '');
+	const stripped = expanded.replace(STRIP_RE, (_match: string, eq: string | undefined, mk: string | undefined): string => eq ?? mk ?? '');
 	if (stripped !== expanded) {
 		editor.replaceRange(stripped, { line, ch: finalStart }, { line, ch: finalEnd });
 	}

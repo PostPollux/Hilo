@@ -1,24 +1,30 @@
 import { Plugin } from 'obsidian';
-import { colorMarkPostProcessor } from '../parser/readingView';
-import { highlightLivePreviewExtension } from '../parser/livePreview';
+import type { EditorView } from '@codemirror/view';
+import { createColorMarkPostProcessor } from '../parser/readingView';
+import { createHighlightLivePreviewExtension } from '../parser/livePreview';
 import { buildContextMenuHandler } from './contextMenu';
 import { registerColorCommands, registerOpenPaletteCommand, registerUnhighlightCommand } from './commands';
 import { DEFAULT_SETTINGS, type Settings } from '../settings/data';
-import { applyHighlightColors, applyHighlightStyle, removeHighlightColors, removeHighlightStyle } from '../settings/styleInjector';
+import { applyHighlightStyle, getColorMap, removeHighlightStyle, type HighlightColorVars } from '../settings/styleInjector';
 import { HighlightSettingTab } from '../settings/tab';
 import { detectLocale, setLocale } from '../i18n';
+
+interface WorkspaceWithCM {
+  iterateCodeMirrors(cb: (view: EditorView) => void): void;
+}
 
 export default class NativeHighlightPlugin extends Plugin {
   settings!: Settings;
   registeredColorCommandIds: string[] = [];
+  private colorMap: Map<string, HighlightColorVars> = new Map();
 
   async onload() {
     setLocale(detectLocale());
     await this.loadSettings();
-    applyHighlightColors(this.settings);
+    this.rebuildColorMap();
     applyHighlightStyle(this.settings.style);
-    this.registerMarkdownPostProcessor(colorMarkPostProcessor);
-    this.registerEditorExtension(highlightLivePreviewExtension);
+    this.registerMarkdownPostProcessor(createColorMarkPostProcessor(() => this.colorMap));
+    this.registerEditorExtension(createHighlightLivePreviewExtension(() => this.colorMap));
     this.registerEvent(this.app.workspace.on('editor-menu', buildContextMenuHandler(this)));
     this.addSettingTab(new HighlightSettingTab(this.app, this));
     registerOpenPaletteCommand(this);
@@ -27,18 +33,33 @@ export default class NativeHighlightPlugin extends Plugin {
   }
 
   onunload() {
-    removeHighlightColors();
     removeHighlightStyle();
   }
 
   async loadSettings() {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData()) as Settings;
   }
 
   async saveSettings() {
     await this.saveData(this.settings);
-    applyHighlightColors(this.settings);
+    this.rebuildColorMap();
     applyHighlightStyle(this.settings.style);
     registerColorCommands(this);
+    this.refreshEditors();
+  }
+
+  private rebuildColorMap(): void {
+    this.colorMap = getColorMap(this.settings);
+  }
+
+  private refreshEditors(): void {
+    try {
+      // internal API: iterateCodeMirrors — forces ViewPlugin to rebuild decorations
+      // so updated color map (bg/underline) takes effect without re-opening the file.
+      const ws = this.app.workspace as unknown as WorkspaceWithCM;
+      ws.iterateCodeMirrors?.((view: EditorView) => view.dispatch({}));
+    } catch {
+      /* internal API best-effort */
+    }
   }
 }

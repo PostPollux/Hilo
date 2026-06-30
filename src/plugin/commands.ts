@@ -1,16 +1,20 @@
-import { Menu, Notice } from 'obsidian';
+import { App, Editor, Menu, Notice } from 'obsidian';
 import type NativeHighlightPlugin from './main';
 import { changeColor, findHighlightAt, resolveColorCommandAction, unhighlight } from './actions';
 import { requestWrapWithColor } from './wrapFlow';
 import { capitalize, populateMenu } from './contextMenu';
 import { t } from '../i18n';
 
+interface CommandsAPI { removeCommand(id: string): void }
+interface AppWithCommands extends App { commands: CommandsAPI }
+interface EditorWithCM extends Editor { cm?: { coordsAtPos?(offset: number): { left: number; bottom: number } | null } }
+
 export function registerColorCommands(plugin: NativeHighlightPlugin): void {
 	// Clean up commands registered on a previous call (settings change).
 	for (const id of plugin.registeredColorCommandIds) {
 		try {
 			// internal API: app.commands.removeCommand
-			(plugin.app as any).commands.removeCommand(`${plugin.manifest.id}:${id}`);
+			(plugin.app as AppWithCommands).commands.removeCommand(`${plugin.manifest.id}:${id}`);
 		} catch {
 			/* best effort */
 		}
@@ -47,7 +51,7 @@ export function registerOpenPaletteCommand(plugin: NativeHighlightPlugin): void 
 			}
 			const cursor = editor.getCursor('head');
 			// internal API: CM6 EditorView is not part of the public Editor surface.
-			const cm = (editor as any).cm;
+			const cm = (editor as EditorWithCM).cm;
 			const offset = editor.posToOffset(cursor);
 			const coords = cm?.coordsAtPos?.(offset);
 			if (coords) {

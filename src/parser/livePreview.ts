@@ -1,9 +1,13 @@
 import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate } from '@codemirror/view';
 import { RangeSetBuilder, type Extension } from '@codemirror/state';
+import type { HighlightColorVars } from '../settings/styleInjector';
 
 const HIGHLIGHT_RE = /==\{([a-z0-9][a-z0-9-]*)\}([^=\n]+(?:=[^=\n]+)*?)==/g;
 
-function buildDecorations(view: EditorView): DecorationSet {
+function buildDecorations(
+	view: EditorView,
+	colorMap: Map<string, HighlightColorVars>,
+): DecorationSet {
 	const builder = new RangeSetBuilder<Decoration>();
 
 	for (const { from, to } of view.visibleRanges) {
@@ -17,9 +21,21 @@ function buildDecorations(view: EditorView): DecorationSet {
 			const tokenStart = matchStart + 2;
 			const tokenEnd = tokenStart + color.length + 2;
 
+			const vars = colorMap.get(color);
+			const markSpec: { class: string; attributes?: { style: string } } = {
+				class: 'hl-' + color,
+			};
+			// If the slug isn't in the map (unknown/disabled color), still apply the class —
+			// the token markup is preserved, the highlight just renders without color.
+			if (vars) {
+				markSpec.attributes = {
+					style: `--hl-bg: ${vars.bg}; --hl-underline: ${vars.underline};`,
+				};
+			}
+
 			// Paint the entire match (including `==` markers) so the active line shows
 			// the highlight color on the markers instead of Obsidian's default yellow.
-			builder.add(matchStart, matchEnd, Decoration.mark({ class: 'hl-' + color }));
+			builder.add(matchStart, matchEnd, Decoration.mark(markSpec));
 			// Reveal the `{color}` token when the cursor touches it so the user can edit.
 			const overlapsCursor = view.state.selection.ranges.some(
 				r => r.to >= tokenStart && r.from <= tokenEnd,
@@ -33,17 +49,21 @@ function buildDecorations(view: EditorView): DecorationSet {
 	return builder.finish();
 }
 
-export const highlightLivePreviewExtension: Extension = ViewPlugin.fromClass(
-	class {
-		decorations: DecorationSet;
-		constructor(view: EditorView) {
-			this.decorations = buildDecorations(view);
-		}
-		update(u: ViewUpdate) {
-			if (u.docChanged || u.viewportChanged || u.selectionSet) {
-				this.decorations = buildDecorations(u.view);
+export function createHighlightLivePreviewExtension(
+	getColors: () => Map<string, HighlightColorVars>,
+): Extension {
+	return ViewPlugin.fromClass(
+		class {
+			decorations: DecorationSet;
+			constructor(view: EditorView) {
+				this.decorations = buildDecorations(view, getColors());
 			}
-		}
-	},
-	{ decorations: v => v.decorations },
-);
+			update(u: ViewUpdate) {
+				if (u.docChanged || u.viewportChanged || u.selectionSet) {
+					this.decorations = buildDecorations(u.view, getColors());
+				}
+			}
+		},
+		{ decorations: v => v.decorations },
+	);
+}

@@ -1,17 +1,28 @@
 import type { MarkdownPostProcessor } from 'obsidian';
 import { parseColorPrefix } from './tokens';
+import type { HighlightColorVars } from '../settings/styleInjector';
 
-export const colorMarkPostProcessor: MarkdownPostProcessor = (el, _ctx) => {
-	const marks = el.querySelectorAll('mark');
-	for (let i = 0; i < marks.length; i++) {
-		const mark = marks[i];
-		const first = mark.firstChild;
-		if (!first || first.nodeType !== Node.TEXT_NODE) continue;
-		const textNode = first as Text;
-		const result = parseColorPrefix(textNode.data);
-		if (!result) continue;
-		mark.classList.add('hl-' + result.color);
-		// Trim only leading data; keep the node so sibling indices stay stable.
-		textNode.data = result.rest;
-	}
-};
+export function createColorMarkPostProcessor(
+	getColors: () => Map<string, HighlightColorVars>,
+): MarkdownPostProcessor {
+	return (el, _ctx) => {
+		const marks = el.querySelectorAll('mark');
+		const colorMap = getColors();
+		for (let i = 0; i < marks.length; i++) {
+			const mark = marks[i];
+			const first = mark.firstChild;
+			if (!first || first.nodeType !== Node.TEXT_NODE) continue;
+			const textNode = first as Text;
+			const result = parseColorPrefix(textNode.data);
+			if (!result) continue;
+			mark.classList.add('hl-' + result.color);
+			const vars = colorMap.get(result.color);
+			if (vars) {
+				mark.style.setProperty('--hl-bg', vars.bg);
+				mark.style.setProperty('--hl-underline', vars.underline);
+			}
+			// Trim only leading data; keep the node so sibling indices stay stable.
+			textNode.data = result.rest;
+		}
+	};
+}

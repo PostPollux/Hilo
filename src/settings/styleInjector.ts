@@ -1,36 +1,33 @@
 import type { HighlightStyle, Settings } from './data';
 
-const STYLE_ID = 'od-highlight-colors';
 const STYLE_BODY_PREFIX = 'od-style-';
 
-export function applyHighlightColors(settings: Settings): void {
-	let el = document.getElementById(STYLE_ID) as HTMLStyleElement | null;
-	if (!el) {
-		el = document.createElement('style');
-		el.id = STYLE_ID;
-		document.head.appendChild(el);
-	}
-	el.textContent = settings.colors
-		.map((c) => {
-			const decl = `background-color: ${c.hex}; --od-underline: ${darkerUnderline(c.hex)};`;
-			return `.hl-${c.slug}, mark.hl-${c.slug}, .cm-highlight.hl-${c.slug} { ${decl} }`;
-		})
-		.join('\n');
+export interface HighlightColorVars {
+	bg: string;
+	underline: string;
 }
 
-export function removeHighlightColors(): void {
-	document.getElementById(STYLE_ID)?.remove();
+/** Build slug → { bg, underline } map from settings. Decoration/post-processor code
+ *  consumes this and writes the values as inline CSS custom properties on each
+ *  highlight element. Replaces the old dynamic <style> rule injection. */
+export function getColorMap(settings: Settings): Map<string, HighlightColorVars> {
+	const map = new Map<string, HighlightColorVars>();
+	for (const c of settings.colors) {
+		map.set(c.slug, { bg: c.hex, underline: darkerUnderline(c.hex) });
+	}
+	return map;
 }
 
 export function applyHighlightStyle(style: HighlightStyle): void {
 	removeHighlightStyle();
 	if (style === 'default') return;
-	document.body.classList.add(`${STYLE_BODY_PREFIX}${style}`);
+	activeDocument.body.classList.add(`${STYLE_BODY_PREFIX}${style}`);
 }
 
 export function removeHighlightStyle(): void {
-	for (const cls of Array.from(document.body.classList)) {
-		if (cls.startsWith(STYLE_BODY_PREFIX)) document.body.classList.remove(cls);
+	const body = activeDocument.body;
+	for (const cls of Array.from(body.classList)) {
+		if (cls.startsWith(STYLE_BODY_PREFIX)) body.classList.remove(cls);
 	}
 }
 

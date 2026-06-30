@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { darkerUnderline } from './styleInjector';
+import { darkerUnderline, getColorMap } from './styleInjector';
+import type { Settings } from './data';
 
 describe('darkerUnderline', () => {
 	it('emits hsl() string with saturation 100%', () => {
@@ -32,5 +33,35 @@ describe('darkerUnderline', () => {
 		const l = Number(match![1]);
 		expect(l).toBeGreaterThanOrEqual(22);
 		expect(l).toBeLessThanOrEqual(24);
+	});
+});
+
+describe('getColorMap', () => {
+	it('maps each color slug to { bg, underline }', () => {
+		const settings: Settings = {
+			colors: [
+				{ slug: 'yellow', hex: '#fff3a3', enabled: true },
+				{ slug: 'red', hex: '#ffb3b3', enabled: true },
+			],
+			style: 'default',
+		};
+		const map = getColorMap(settings);
+		expect(map.size).toBe(2);
+		expect(map.get('yellow')).toEqual({ bg: '#fff3a3', underline: 'hsl(52 100% 52%)' });
+		expect(map.get('red')).toEqual({ bg: '#ffb3b3', underline: 'hsl(0 100% 55%)' });
+	});
+	it('includes disabled colors too (rendering decides via active class list)', () => {
+		const settings: Settings = {
+			colors: [
+				{ slug: 'yellow', hex: '#fff3a3', enabled: false },
+			],
+			style: 'default',
+		};
+		const map = getColorMap(settings);
+		expect(map.has('yellow')).toBe(true);
+	});
+	it('empty colors → empty map', () => {
+		const settings: Settings = { colors: [], style: 'default' };
+		expect(getColorMap(settings).size).toBe(0);
 	});
 });

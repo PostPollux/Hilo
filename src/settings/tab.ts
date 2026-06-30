@@ -1,7 +1,6 @@
 import { App, PluginSettingTab, Setting, setIcon } from 'obsidian';
 import type NativeHighlightPlugin from '../plugin/main';
 import { HEX_RE, SLUG_RE, type HighlightColor, type HighlightStyle } from './data';
-import { applyHighlightColors } from './styleInjector';
 import { commandIdForColor, getHotkeyForCommand, openHotkeyAssignment } from '../plugin/hotkeys';
 import { capitalize } from '../plugin/contextMenu';
 import { t } from '../i18n';
@@ -24,11 +23,12 @@ export class HighlightSettingTab extends PluginSettingTab {
 			.setHeading();
 
 		new Setting(containerEl).addButton((btn) =>
-			btn.setButtonText(t('settings.colors.addButton')).onClick(async () => {
-				this.plugin.settings.colors.push({ slug: 'new', hex: '#cccccc', enabled: true });
-				await this.plugin.saveSettings();
-				applyHighlightColors(this.plugin.settings);
-				this.display();
+			btn.setButtonText(t('settings.colors.addButton')).onClick(() => {
+				void (async () => {
+					this.plugin.settings.colors.push({ slug: 'new', hex: '#cccccc', enabled: true });
+					await this.plugin.saveSettings();
+					this.display();
+				})();
 			}),
 		);
 
@@ -41,9 +41,11 @@ export class HighlightSettingTab extends PluginSettingTab {
 				dd.addOption('default', t('settings.style.options.default'));
 				dd.addOption('lowlight', t('settings.style.options.lowlight'));
 				dd.setValue(this.plugin.settings.style);
-				dd.onChange(async (value) => {
-					this.plugin.settings.style = value as HighlightStyle;
-					await this.plugin.saveSettings();
+				dd.onChange((value) => {
+					void (async () => {
+						this.plugin.settings.style = value as HighlightStyle;
+						await this.plugin.saveSettings();
+					})();
 				});
 			});
 	}
@@ -55,12 +57,13 @@ export class HighlightSettingTab extends PluginSettingTab {
 		const upBtn = row.createEl('button', { cls: 'od-arrow', attr: { 'aria-label': t('settings.colors.row.moveUp') } });
 		setIcon(upBtn, 'chevron-up');
 		upBtn.disabled = index === 0;
-		upBtn.addEventListener('click', async () => {
-			if (index === 0) return;
-			[colors[index - 1], colors[index]] = [colors[index], colors[index - 1]];
-			await this.plugin.saveSettings();
-			applyHighlightColors(this.plugin.settings);
-			this.display();
+		upBtn.addEventListener('click', () => {
+			void (async () => {
+				if (index === 0) return;
+				[colors[index - 1], colors[index]] = [colors[index], colors[index - 1]];
+				await this.plugin.saveSettings();
+				this.display();
+			})();
 		});
 
 		const downBtn = row.createEl('button', {
@@ -69,12 +72,13 @@ export class HighlightSettingTab extends PluginSettingTab {
 		});
 		setIcon(downBtn, 'chevron-down');
 		downBtn.disabled = index === colors.length - 1;
-		downBtn.addEventListener('click', async () => {
-			if (index === colors.length - 1) return;
-			[colors[index], colors[index + 1]] = [colors[index + 1], colors[index]];
-			await this.plugin.saveSettings();
-			applyHighlightColors(this.plugin.settings);
-			this.display();
+		downBtn.addEventListener('click', () => {
+			void (async () => {
+				if (index === colors.length - 1) return;
+				[colors[index], colors[index + 1]] = [colors[index + 1], colors[index]];
+				await this.plugin.saveSettings();
+				this.display();
+			})();
 		});
 
 		const enabledInput = row.createEl('input', {
@@ -82,10 +86,11 @@ export class HighlightSettingTab extends PluginSettingTab {
 			attr: { type: 'checkbox', 'aria-label': t('settings.colors.row.enabled') },
 		});
 		enabledInput.checked = color.enabled;
-		enabledInput.addEventListener('change', async () => {
-			colors[index].enabled = enabledInput.checked;
-			await this.plugin.saveSettings();
-			applyHighlightColors(this.plugin.settings);
+		enabledInput.addEventListener('change', () => {
+			void (async () => {
+				colors[index].enabled = enabledInput.checked;
+				await this.plugin.saveSettings();
+			})();
 		});
 
 		const slugInput = row.createEl('input', {
@@ -93,17 +98,18 @@ export class HighlightSettingTab extends PluginSettingTab {
 			attr: { type: 'text', value: color.slug, 'aria-label': t('settings.colors.row.slug') },
 		});
 		slugInput.value = color.slug;
-		slugInput.addEventListener('input', async () => {
-			const next = slugInput.value;
-			const duplicate = colors.some((c, j) => j !== index && c.slug === next);
-			if (!SLUG_RE.test(next) || duplicate) {
-				slugInput.classList.add('is-invalid');
-				return;
-			}
-			slugInput.classList.remove('is-invalid');
-			colors[index].slug = next;
-			await this.plugin.saveSettings();
-			applyHighlightColors(this.plugin.settings);
+		slugInput.addEventListener('input', () => {
+			void (async () => {
+				const next = slugInput.value;
+				const duplicate = colors.some((c, j) => j !== index && c.slug === next);
+				if (!SLUG_RE.test(next) || duplicate) {
+					slugInput.classList.add('is-invalid');
+					return;
+				}
+				slugInput.classList.remove('is-invalid');
+				colors[index].slug = next;
+				await this.plugin.saveSettings();
+			})();
 		});
 
 		const picker = row.createEl('input', {
@@ -118,26 +124,28 @@ export class HighlightSettingTab extends PluginSettingTab {
 		});
 		hexInput.value = color.hex;
 
-		picker.addEventListener('input', async () => {
-			const next = picker.value;
-			hexInput.value = next;
-			hexInput.classList.remove('is-invalid');
-			colors[index].hex = next;
-			await this.plugin.saveSettings();
-			applyHighlightColors(this.plugin.settings);
+		picker.addEventListener('input', () => {
+			void (async () => {
+				const next = picker.value;
+				hexInput.value = next;
+				hexInput.classList.remove('is-invalid');
+				colors[index].hex = next;
+				await this.plugin.saveSettings();
+			})();
 		});
 
-		hexInput.addEventListener('input', async () => {
-			const next = hexInput.value;
-			if (!HEX_RE.test(next)) {
-				hexInput.classList.add('is-invalid');
-				return;
-			}
-			hexInput.classList.remove('is-invalid');
-			picker.value = normalizeHexForPicker(next);
-			colors[index].hex = next;
-			await this.plugin.saveSettings();
-			applyHighlightColors(this.plugin.settings);
+		hexInput.addEventListener('input', () => {
+			void (async () => {
+				const next = hexInput.value;
+				if (!HEX_RE.test(next)) {
+					hexInput.classList.add('is-invalid');
+					return;
+				}
+				hexInput.classList.remove('is-invalid');
+				picker.value = normalizeHexForPicker(next);
+				colors[index].hex = next;
+				await this.plugin.saveSettings();
+			})();
 		});
 
 		const hotkey = getHotkeyForCommand(this.plugin, commandIdForColor(color.slug));
@@ -165,11 +173,12 @@ export class HighlightSettingTab extends PluginSettingTab {
 			attr: { 'aria-label': t('settings.colors.row.delete') },
 		});
 		setIcon(deleteBtn, 'trash');
-		deleteBtn.addEventListener('click', async () => {
-			colors.splice(index, 1);
-			await this.plugin.saveSettings();
-			applyHighlightColors(this.plugin.settings);
-			this.display();
+		deleteBtn.addEventListener('click', () => {
+			void (async () => {
+				colors.splice(index, 1);
+				await this.plugin.saveSettings();
+				this.display();
+			})();
 		});
 	}
 }
