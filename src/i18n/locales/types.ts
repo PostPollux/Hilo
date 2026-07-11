@@ -29,6 +29,7 @@ export interface Locale {
 			options: {
 				default: string;
 				lowlight: string;
+				underlined: string;
 			};
 		};
 	};

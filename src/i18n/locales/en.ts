@@ -27,6 +27,7 @@ export const en: Locale = {
 			options: {
 				default: 'Default (solid)',
 				lowlight: 'Lowlight (iA Writer)',
+				underlined: 'Underlined',
 			},
 		},
 	},

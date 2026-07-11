@@ -27,6 +27,7 @@ export const ko: Locale = {
 			options: {
 				default: '기본 (솔리드)',
 				lowlight: '로우라이트 (iA Writer)',
+				underlined: '언더라인',
 			},
 		},
 	},
