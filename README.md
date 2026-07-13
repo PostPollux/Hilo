@@ -183,6 +183,12 @@ Hilo's right-click menu structure, settings UI flow, and visual style catalog ar
 
 ---
 
+## Built with
+
+Hilo was scaffolded with [Scaff](https://github.com/opellen/Scaff) — a lightweight, markdown-based AI development harness. Every iteration (phase-by-phase build, marketplace review, demo assets) was tracked as plain-file `CONTEXT.md` / `GOAL.md` / `ROADMAP.md`, without any CLI, hooks, or MCP.
+
+---
+
 ## License
 
 [MIT](LICENSE)
