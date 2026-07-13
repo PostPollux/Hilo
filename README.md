@@ -172,7 +172,6 @@ The following features are deliberately omitted to keep Hilo focused. They may b
 
 - Annotations / notes attached to highlights
 - Sidebar list of highlights (NotesTab)
-- Color preview icons in menus
 - Drag-to-reorder colors
 
 ---
