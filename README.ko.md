@@ -6,6 +6,10 @@
 
 `Hilo`는 **Hi**ghlight + **Lo**wlight의 조합이자, 스페인어로 "실(Thread)"을 뜻합니다. 마크다운 본연의 흐름을 끊지 않고 색을 부드럽게 엮어내는 플러그인의 철학을 담았습니다.
 
+![Hilo — 인라인 마크다운/위키링크가 하이라이트 안에서 살아있고, 하이라이트 안에서 다시 색을 지정하면 자동 분할까지](assets/screenshots/demo-01-hero.png)
+
+▶ **[39초 데모 영상 →](https://youtube.com/@opellen-dev)**
+
 ---
 
 ## 왜 Hilo인가
@@ -33,6 +37,9 @@
 - Live Preview에서 `{color}` 토큰은 자동으로 시각적으로 숨겨지고, 커서를 토큰 위에 두면 다시 나타나 편집할 수 있습니다.
 
 ### 우클릭 컨텍스트 메뉴
+
+![우클릭으로 Highlight 서브메뉴가 열리며 색상 카탈로그를 노출](assets/screenshots/demo-02-context-menu.png)
+
 - **Highlight** → 색상 선택: 선택 영역을 즉시 wrap
 - **Change color** → 다른 색상으로 교체
 - **Unhighlight**: 마커와 토큰 제거
@@ -45,6 +52,9 @@
 설정 → Hotkeys에서 자유롭게 단축키를 할당할 수 있습니다. 또한 **설정 → Hilo** 페이지의 각 색상 row에 현재 할당된 단축키가 표시되며, 키보드 버튼(⌨)을 클릭하면 Hotkeys 페이지로 바로 이동합니다.
 
 ### 색상 커스터마이즈
+
+![설정 → Hilo — 색상별 슬러그/hex/미리보기/단축키와 Highlight style 드롭다운](assets/screenshots/demo-03-settings.png)
+
 - 설정 → Hilo에서 색상 추가/편집/삭제/순서 변경/활성화 토글 지원.
 - 슬러그(`yellow`) + hex(`#fff3a3`) 조합으로 자유 정의.
 - 비활성화된 색상은 메뉴에서 숨겨지지만 기존 하이라이트는 시각적으로 유지됩니다.

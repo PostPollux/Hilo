@@ -6,6 +6,10 @@
 
 `Hilo` blends **Hi**ghlight + **Lo**wlight, and means "thread" in Spanish — reflecting the plugin's philosophy of weaving color into your notes without breaking markdown's natural flow.
 
+![Hilo — multi-color highlights with inline markdown, wikilinks, and mid-highlight color splits all intact](assets/screenshots/demo-01-hero.png)
+
+▶ **[Watch the 39-second demo on YouTube](https://youtube.com/@opellen-dev)**
+
 ---
 
 ## Why Hilo
@@ -33,6 +37,9 @@
 - In Live Preview the `{color}` token is hidden automatically; placing the cursor on the token reveals it for editing.
 
 ### Right-click context menu
+
+![Right-click a selection to open the Highlight submenu with the full color catalog](assets/screenshots/demo-02-context-menu.png)
+
 - **Highlight** → pick a color: wraps the selection
 - **Change color** → swap to another color
 - **Unhighlight**: removes the marker and token
@@ -45,6 +52,9 @@
 Assign hotkeys in **Settings → Hotkeys**. Each color row in **Settings → Hilo** also shows the currently assigned hotkey, and the keyboard button (⌨) jumps straight to the Hotkeys page.
 
 ### Color customization
+
+![Settings → Hilo — slug/hex/preview/hotkey per color, plus the Highlight style dropdown](assets/screenshots/demo-03-settings.png)
+
 - **Settings → Hilo** lets you add, edit, delete, reorder, and enable/disable colors.
 - Define any color as `slug` + `hex` (e.g. `yellow` + `#fff3a3`).
 - Disabled colors are hidden from menus but remain visually preserved in existing highlights.
