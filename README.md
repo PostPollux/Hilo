@@ -53,16 +53,21 @@ Assign hotkeys in **Settings → Hotkeys**. Each color row in **Settings → Hil
 
 ### Color customization
 
-![Settings → Hilo — slug/hex/preview/hotkey per color, plus the Highlight style dropdown](assets/screenshots/demo-03-settings.png)
+![Settings → Hilo — slug/hex/preview/hotkey per color, Highlight style dropdown, and a live preview of every style](assets/screenshots/demo-03-settings.png)
 
 - **Settings → Hilo** lets you add, edit, delete, reorder, and enable/disable colors.
 - Define any color as `slug` + `hex` (e.g. `yellow` + `#fff3a3`).
 - Disabled colors are hidden from menus but remain visually preserved in existing highlights.
 
-### iA Writer–style lowlight mode
-- Background + per-color darker underline. Choose it under **Settings → Highlight style → Lowlight**.
-- Underline color is computed from each background via HSL (hue preserved, saturation 100%, lightness −30pp).
-- Underline uses `box-shadow` instead of `text-decoration` to avoid being overridden by Chromium's spellcheck.
+### Visual styles
+
+Three ways to render highlights, switchable under **Settings → Hilo → Highlight style** (live previews are shown right below the dropdown — see the screenshot above):
+
+- **Default (solid)** — the color fills the whole text region, like a classic highlighter marker.
+- **Lowlight (iA Writer)** — subtle background with a darker underline; the underline color is auto-computed from each background via HSL (hue preserved, saturation 100%, lightness −30pp).
+- **Underlined** — a thin band of color at the bottom of the text, no fill. Works cleanly on both light and dark themes.
+
+Underlines use `box-shadow` (Lowlight) or `linear-gradient` (Underlined) instead of `text-decoration`, so they aren't overridden by Chromium's spellcheck.
 
 ### Highlightr migration
 - The context menu also works on existing `<mark style="...">text</mark>` highlights.

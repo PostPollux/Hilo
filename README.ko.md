@@ -53,16 +53,21 @@
 
 ### 색상 커스터마이즈
 
-![설정 → Hilo — 색상별 슬러그/hex/미리보기/단축키와 Highlight style 드롭다운](assets/screenshots/demo-03-settings.png)
+![설정 → Hilo — 색상별 슬러그/hex/미리보기/단축키, Highlight style 드롭다운, 각 스타일 실시간 프리뷰](assets/screenshots/demo-03-settings.png)
 
 - 설정 → Hilo에서 색상 추가/편집/삭제/순서 변경/활성화 토글 지원.
 - 슬러그(`yellow`) + hex(`#fff3a3`) 조합으로 자유 정의.
 - 비활성화된 색상은 메뉴에서 숨겨지지만 기존 하이라이트는 시각적으로 유지됩니다.
 
-### iA Writer 풍 lowlight 스타일
-- 설정 → Highlight style에서 `Lowlight` 선택 시 배경 + 색상별 자동 darker underline 적용.
-- underline 색은 각 배경색에서 HSL 변환(hue 유지, saturation 100%, lightness -30pp)으로 자동 계산.
-- Chromium spellcheck와 충돌하지 않는 `box-shadow` 기반 underline.
+### 시각 스타일
+
+설정 → Hilo → Highlight style에서 세 가지 렌더 방식 중 선택 (드롭다운 바로 아래에 실시간 프리뷰가 표시됩니다 — 위 스크린샷 참고):
+
+- **Default (solid)** — 텍스트 전체 영역을 색으로 채우는 클래식 형광펜 스타일.
+- **Lowlight (iA Writer)** — 은은한 배경 + 색상별 진한 밑줄. 밑줄 색은 각 배경색에서 HSL 변환(hue 유지, saturation 100%, lightness -30pp)으로 자동 계산.
+- **Underlined** — 배경 없이 텍스트 하단만 얇은 컬러 밴드. Light/dark 테마 모두 자연스러움.
+
+밑줄은 `box-shadow`(Lowlight) 또는 `linear-gradient`(Underlined)로 렌더 — `text-decoration`이 Chromium spellcheck에 override되는 문제 회피.
 
 ### Highlightr 마이그레이션
 - 기존 `<mark style="...">text</mark>` 형태의 하이라이트에서도 우클릭 메뉴가 작동합니다.
