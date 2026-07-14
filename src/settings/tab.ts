@@ -3,7 +3,10 @@ import type NativeHighlightPlugin from '../plugin/main';
 import { HEX_RE, SLUG_RE, type HighlightColor, type HighlightStyle } from './data';
 import { commandIdForColor, getHotkeyForCommand, openHotkeyAssignment } from '../plugin/hotkeys';
 import { capitalize } from '../plugin/contextMenu';
+import { darkerUnderline } from './styleInjector';
 import { t } from '../i18n';
+
+const STYLES: HighlightStyle[] = ['default', 'lowlight', 'underlined'];
 
 export class HighlightSettingTab extends PluginSettingTab {
 	plugin: NativeHighlightPlugin;
@@ -34,12 +37,13 @@ export class HighlightSettingTab extends PluginSettingTab {
 
 		this.plugin.settings.colors.forEach((color, i) => this.renderRow(containerEl, color, i));
 
-		new Setting(containerEl)
+		const styleSetting = new Setting(containerEl)
 			.setName(t('settings.style.heading'))
 			.setDesc(t('settings.style.desc'))
 			.addDropdown((dd) => {
 				dd.addOption('default', t('settings.style.options.default'));
 				dd.addOption('lowlight', t('settings.style.options.lowlight'));
+				dd.addOption('underlined', t('settings.style.options.underlined'));
 				dd.setValue(this.plugin.settings.style);
 				dd.onChange((value) => {
 					void (async () => {
@@ -48,6 +52,26 @@ export class HighlightSettingTab extends PluginSettingTab {
 					})();
 				});
 			});
+
+		const previewEl = styleSetting.descEl.createDiv({ cls: 'od-style-preview-list' });
+		const color = this.getFirstColor();
+		for (const style of STYLES) {
+			const row = previewEl.createDiv({ cls: 'od-style-preview-row' });
+			const demo = row.createSpan({ cls: 'od-style-demo' });
+			if (style !== 'default') demo.addClass(`od-style-${style}`);
+			const sample = demo.createSpan({
+				cls: 'od-preview-sample',
+				text: t(`settings.style.options.${style}`),
+			});
+			if (color) {
+				sample.style.setProperty('--hl-bg', color.hex);
+				sample.style.setProperty('--hl-underline', darkerUnderline(color.hex));
+			}
+		}
+	}
+
+	private getFirstColor(): HighlightColor | undefined {
+		return this.plugin.settings.colors.find((c) => c.enabled) ?? this.plugin.settings.colors[0];
 	}
 
 	private renderRow(containerEl: HTMLElement, color: HighlightColor, index: number): void {

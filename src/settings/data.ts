@@ -4,7 +4,7 @@ export interface HighlightColor {
 	enabled: boolean;
 }
 
-export type HighlightStyle = 'default' | 'lowlight';
+export type HighlightStyle = 'default' | 'lowlight' | 'underlined';
 
 export interface Settings {
 	colors: HighlightColor[];
