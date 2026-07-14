@@ -8,6 +8,10 @@ import { t } from '../i18n';
 
 const STYLES: HighlightStyle[] = ['default', 'lowlight', 'underlined'];
 
+// TODO: PluginSettingTab.display() is deprecated since Obsidian 1.13.0 in favor
+// of getSettingDefinitions(). Migrate when manifest.minAppVersion is raised to
+// 1.13.0+ (currently 1.5.0). The this.display() calls below (used to re-render
+// after edits) also fall away with the declarative API.
 export class HighlightSettingTab extends PluginSettingTab {
 	plugin: NativeHighlightPlugin;
 

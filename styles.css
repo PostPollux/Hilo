@@ -48,15 +48,31 @@ span[class*="hl-"] {
   background: var(--hl-bg);
 }
 
-/* Neutralize Obsidian's native highlight background on OUR highlights
-   (elements carrying an hl-* class), regardless of which style is active. */
-.cm-s-obsidian .cm-formatting-highlight[class*="hl-"],
-.cm-s-obsidian .cm-highlight[class*="hl-"],
-.cm-s-obsidian .cm-formatting-highlight:has([class*="hl-"]),
-.cm-s-obsidian .cm-highlight:has([class*="hl-"]),
-[class*="hl-"] .cm-highlight,
-[class*="hl-"] .cm-formatting-highlight,
-.markdown-preview-view mark[class*="hl-"] {
+/* Neutralize Obsidian's native highlight background so it doesn't bleed
+   through the Underlined style's transparent upper region. Scoped to that
+   style only — Default/Lowlight paint a solid fill that already covers the
+   native background, so no neutralizer needed there. Only non-slugged
+   `==text==` highlights keep their native yellow (intentional — we don't
+   want to erase highlights the plugin didn't put there).
+
+   The :has() variants target the case where CM6 wraps a `.cm-highlight`
+   parent AROUND our hl-* decoration. That was the shape shown in the
+   underlined-style PR's before/after screenshots (link in the PR review);
+   removing :has() reintroduces the bleed. The other selectors cover the
+   sibling shapes (hl-* on the same element, hl-* as ancestor, reading-view
+   mark).
+
+   The marketplace bot flags :has() as a performance concern (broad selector
+   invalidation). Scoping to `body.od-style-underlined` limits the concern
+   to sessions with that style active. The trade-off is deliberate and
+   verified empirically. */
+body.od-style-underlined .cm-highlight[class*="hl-"],
+body.od-style-underlined .cm-formatting-highlight[class*="hl-"],
+body.od-style-underlined .cm-highlight:has([class*="hl-"]),
+body.od-style-underlined .cm-formatting-highlight:has([class*="hl-"]),
+body.od-style-underlined [class*="hl-"] .cm-highlight,
+body.od-style-underlined [class*="hl-"] .cm-formatting-highlight,
+body.od-style-underlined .markdown-preview-view mark[class*="hl-"] {
   background-color: transparent;
 }
 
@@ -82,6 +98,10 @@ body.od-style-underlined span[class*="hl-"] {
     var(--hl-bg) 100%
   );
   padding-bottom: 0.05em;
+  /* box-decoration-break makes the gradient band render correctly when text
+     wraps across lines. The marketplace bot flags this as "partially supported
+     by Obsidian 1.4.5", but our minAppVersion is 1.5.0 (Chromium 116+) where
+     the -webkit- prefix is fully supported — safe to keep. */
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
