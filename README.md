@@ -61,11 +61,19 @@ Assign hotkeys in **Settings → Hotkeys**. Each color row in **Settings → Hil
 
 ### Visual styles
 
-Three ways to render highlights, switchable under **Settings → Hilo → Highlight style** (live previews are shown right below the dropdown — see the screenshot above):
+Three ways to render highlights, switchable under **Settings → Hilo → Highlight style**:
 
 - **Default (solid)** — the color fills the whole text region, like a classic highlighter marker.
+
+  ![Default style — solid color fill across the text](assets/screenshots/demo-04-style-default.png)
+
 - **Lowlight (iA Writer)** — subtle background with a darker underline; the underline color is auto-computed from each background via HSL (hue preserved, saturation 100%, lightness −30pp).
+
+  ![Lowlight style — background plus a darker underline stripe](assets/screenshots/demo-05-style-lowlight.png)
+
 - **Underlined** — a thin band of color at the bottom of the text, no fill. Works cleanly on both light and dark themes.
+
+  ![Underlined style — no fill, colored band only at the bottom edge](assets/screenshots/demo-06-style-underlined.png)
 
 Underlines use `box-shadow` (Lowlight) or `linear-gradient` (Underlined) instead of `text-decoration`, so they aren't overridden by Chromium's spellcheck.
 

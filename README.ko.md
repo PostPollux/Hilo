@@ -61,11 +61,19 @@
 
 ### 시각 스타일
 
-설정 → Hilo → Highlight style에서 세 가지 렌더 방식 중 선택 (드롭다운 바로 아래에 실시간 프리뷰가 표시됩니다 — 위 스크린샷 참고):
+설정 → Hilo → Highlight style에서 세 가지 렌더 방식 중 선택:
 
 - **Default (solid)** — 텍스트 전체 영역을 색으로 채우는 클래식 형광펜 스타일.
+
+  ![Default — 텍스트 전체 영역 solid 색 채우기](assets/screenshots/demo-04-style-default.png)
+
 - **Lowlight (iA Writer)** — 은은한 배경 + 색상별 진한 밑줄. 밑줄 색은 각 배경색에서 HSL 변환(hue 유지, saturation 100%, lightness -30pp)으로 자동 계산.
+
+  ![Lowlight — 배경 + 진한 밑줄 밴드](assets/screenshots/demo-05-style-lowlight.png)
+
 - **Underlined** — 배경 없이 텍스트 하단만 얇은 컬러 밴드. Light/dark 테마 모두 자연스러움.
+
+  ![Underlined — 배경 없이 하단 컬러 밴드만](assets/screenshots/demo-06-style-underlined.png)
 
 밑줄은 `box-shadow`(Lowlight) 또는 `linear-gradient`(Underlined)로 렌더 — `text-decoration`이 Chromium spellcheck에 override되는 문제 회피.
 
