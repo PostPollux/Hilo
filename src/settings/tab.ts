@@ -118,6 +118,19 @@ export class HighlightSettingTab extends PluginSettingTab {
 				sample.style.setProperty('--hl-underline', darkerUnderline(color.hex));
 			}
 		}
+
+		new Setting(containerEl)
+			.setName(t('settings.readability.heading'))
+			.setDesc(t('settings.readability.desc'))
+			.addToggle((toggle) => {
+			toggle.setValue(this.plugin.settings.autoReadability !== false);
+			toggle.onChange((value) => {
+				void (async () => {
+					this.plugin.settings.autoReadability = value;
+					await this.plugin.saveSettings();
+				})();
+				});
+			});
 	}
 
 	private getFirstColor(): HighlightColor | undefined {
