@@ -10,7 +10,7 @@ export interface Locale {
 			heading: string;
 			desc: string;
 			options: {
-				default: string;
+				custom: string;
 				builtin: string;
 			};
 		};

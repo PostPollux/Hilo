@@ -7,7 +7,7 @@ export interface HighlightColor {
 
 export type HighlightStyle = 'default' | 'lowlight' | 'underlined';
 
-export type PaletteId = 'default' | 'builtin';
+export type PaletteId = 'custom' | 'builtin';
 
 export interface ColorPalette {
 	id: PaletteId;
@@ -23,7 +23,7 @@ export interface Settings {
 }
 
 /** Soft highlight-style seeds (pastel backgrounds). */
-export const DEFAULT_PALETTE_COLORS: HighlightColor[] = [
+export const CUSTOM_PALETTE_COLORS: HighlightColor[] = [
 	{ slug: 'yellow', hex: '#fff3a3', enabled: true },
 	{ slug: 'red', hex: '#ffb3b3', enabled: true },
 	{ slug: 'green', hex: '#b3e6b3', enabled: true },
@@ -114,10 +114,10 @@ export function restoreBuiltinColors(colors: HighlightColor[]): void {
 
 export const DEFAULT_SETTINGS: Settings = {
 	palettes: [
-		{ id: 'default', colors: DEFAULT_PALETTE_COLORS.map((c) => ({ ...c })) },
+		{ id: 'custom', colors: CUSTOM_PALETTE_COLORS.map((c) => ({ ...c })) },
 		{ id: 'builtin', colors: BUILTIN_PALETTE_COLORS.map((c) => ({ ...c })) },
 	],
-	activePalette: 'default',
+	activePalette: 'builtin',
 	style: 'default',
 };
 
@@ -152,26 +152,26 @@ export function migrateSettings(raw: Partial<Settings> | null | undefined): Sett
 
 	if (Array.isArray(raw.palettes) && raw.palettes.length > 0) {
 		base.palettes = raw.palettes.map((p) => ({
-			id: p.id === 'builtin' ? 'builtin' : 'default',
+			id: p.id === 'builtin' ? 'builtin' : 'custom',
 			colors: Array.isArray(p.colors) ? p.colors.map((c) => ({ ...c })) : [],
 		}));
 		// Ensure both known palettes exist so the dropdown always has options.
-		for (const id of ['default', 'builtin'] as const) {
+		for (const id of ['custom', 'builtin'] as const) {
 			if (!base.palettes.some((p) => p.id === id)) {
-				const seed = id === 'builtin' ? BUILTIN_PALETTE_COLORS : DEFAULT_PALETTE_COLORS;
+				const seed = id === 'builtin' ? BUILTIN_PALETTE_COLORS : CUSTOM_PALETTE_COLORS;
 				base.palettes.push({ id, colors: seed.map((c) => ({ ...c })) });
 			}
 		}
 	} else if (Array.isArray(raw.colors)) {
-		// Pre-palette saves: treat the saved list as the default palette.
-		const defaultIdx = base.palettes.findIndex((p) => p.id === 'default');
-		base.palettes[defaultIdx] = {
-			id: 'default',
+		// Pre-palette saves: treat the saved list as the custom palette.
+		const customIdx = base.palettes.findIndex((p) => p.id === 'custom');
+		base.palettes[customIdx] = {
+			id: 'custom',
 			colors: raw.colors.map((c) => ({ ...c })),
 		};
 	}
 
-	if (raw.activePalette === 'default' || raw.activePalette === 'builtin') {
+	if (raw.activePalette === 'custom' || raw.activePalette === 'builtin') {
 		base.activePalette = raw.activePalette;
 	}
 

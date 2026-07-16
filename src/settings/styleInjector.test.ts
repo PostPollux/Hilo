@@ -41,14 +41,14 @@ describe('getColorMap', () => {
 		const settings: Settings = {
 			palettes: [
 				{
-					id: 'default',
+					id: 'custom',
 					colors: [
 						{ slug: 'yellow', hex: '#fff3a3', enabled: true },
 						{ slug: 'red', hex: '#ffb3b3', enabled: true },
 					],
 				},
 			],
-			activePalette: 'default',
+			activePalette: 'custom',
 			style: 'default',
 		};
 		const map = getColorMap(settings);
@@ -60,11 +60,11 @@ describe('getColorMap', () => {
 		const settings: Settings = {
 			palettes: [
 				{
-					id: 'default',
+					id: 'custom',
 					colors: [{ slug: 'yellow', hex: '#fff3a3', enabled: false }],
 				},
 			],
-			activePalette: 'default',
+			activePalette: 'custom',
 			style: 'default',
 		};
 		const map = getColorMap(settings);
@@ -72,8 +72,8 @@ describe('getColorMap', () => {
 	});
 	it('empty colors → empty map', () => {
 		const settings: Settings = {
-			palettes: [{ id: 'default', colors: [] }],
-			activePalette: 'default',
+			palettes: [{ id: 'custom', colors: [] }],
+			activePalette: 'custom',
 			style: 'default',
 		};
 		expect(getColorMap(settings).size).toBe(0);
@@ -81,10 +81,10 @@ describe('getColorMap', () => {
 	it('includes colors from inactive palettes', () => {
 		const settings: Settings = {
 			palettes: [
-				{ id: 'default', colors: [{ slug: 'yellow', hex: '#fff3a3', enabled: true }] },
+				{ id: 'custom', colors: [{ slug: 'yellow', hex: '#fff3a3', enabled: true }] },
 				{ id: 'builtin', colors: [{ slug: 'cyan', hex: '', enabled: true }] },
 			],
-			activePalette: 'default',
+			activePalette: 'custom',
 			style: 'default',
 		};
 		const map = getColorMap(settings);
@@ -94,10 +94,10 @@ describe('getColorMap', () => {
 	it('active palette wins on slug conflicts', () => {
 		const settings: Settings = {
 			palettes: [
-				{ id: 'default', colors: [{ slug: 'red', hex: '#ffb3b3', enabled: true }] },
+				{ id: 'custom', colors: [{ slug: 'red', hex: '#ffb3b3', enabled: true }] },
 				{ id: 'builtin', colors: [{ slug: 'red', hex: '', enabled: true }] },
 			],
-			activePalette: 'default',
+			activePalette: 'custom',
 			style: 'default',
 		};
 		expect(getColorMap(settings).get('red')?.bg).toBe('#ffb3b3');

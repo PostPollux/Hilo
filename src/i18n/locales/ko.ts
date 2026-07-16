@@ -8,8 +8,8 @@ export const ko: Locale = {
 			heading: '색상 팔레트',
 			desc: '강조와 이 플러그인의 컨텍스트 메뉴에 사용할 색상 팔레트를 전환합니다. 활성 팔레트에 없는 슬러그의 기존 강조도 계속 렌더링됩니다.',
 			options: {
-				default: '기본',
-				builtin: '내장 (Obsidian)',
+				custom: '사용자 지정',
+				builtin: '내장 (테마)',
 			},
 		},
 		colors: {

@@ -39,8 +39,8 @@ export class HighlightSettingTab extends PluginSettingTab {
 			.setName(t('settings.palette.heading'))
 			.setDesc(t('settings.palette.desc'))
 			.addDropdown((dd) => {
-				dd.addOption('default', t('settings.palette.options.default'));
 				dd.addOption('builtin', t('settings.palette.options.builtin'));
+				dd.addOption('custom', t('settings.palette.options.custom'));
 				dd.setValue(this.plugin.settings.activePalette);
 				dd.onChange((value) => {
 					void (async () => {
@@ -51,12 +51,9 @@ export class HighlightSettingTab extends PluginSettingTab {
 				});
 			});
 
-		new Setting(containerEl)
+		const colorActions = new Setting(containerEl)
 			.setName(t('settings.colors.heading'))
-			.setDesc(t('settings.colors.desc'))
-			.setHeading();
-
-		const colorActions = new Setting(containerEl);
+			.setDesc(t('settings.colors.desc'));
 		if (this.plugin.settings.activePalette === 'builtin') {
 			colorActions.addButton((btn) =>
 				btn.setButtonText(t('settings.colors.restoreBuiltin')).onClick(() => {
@@ -92,6 +89,7 @@ export class HighlightSettingTab extends PluginSettingTab {
 		const styleSetting = new Setting(containerEl)
 			.setName(t('settings.style.heading'))
 			.setDesc(t('settings.style.desc'))
+			.setClass('od-style-setting')
 			.addDropdown((dd) => {
 				dd.addOption('default', t('settings.style.options.default'));
 				dd.addOption('lowlight', t('settings.style.options.lowlight'));

@@ -8,8 +8,8 @@ export const en: Locale = {
 			heading: 'Color palette',
 			desc: 'Switch which color palette is used for your highlights and for the context menus of this plugin. Existing highlights keep rendering even if their slug is not in the active palette.',
 			options: {
-				default: 'Default',
-				builtin: 'Builtin (Obsidian)',
+				custom: 'Custom',
+				builtin: 'Builtin (Theme)',
 			},
 		},
 		colors: {
