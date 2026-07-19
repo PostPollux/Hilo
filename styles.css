@@ -86,24 +86,14 @@ body.od-style-lowlight .cm-highlight[style*="--hl-underline"] {
 }
 
 /* Underlined — a thin band of color across the bottom of the text, like a
-   fat underline. */
+   fat underline. Uses the same inset-box-shadow technique as Lowlight so it
+   renders correctly per line box on wrapped inline text without needing
+   `box-decoration-break`. */
 body.od-style-underlined mark[class*="hl-"],
 body.od-style-underlined .cm-highlight[style*="--hl-bg"],
 body.od-style-underlined span[class*="hl-"] {
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    transparent 78%,
-    var(--hl-bg) 78%,
-    var(--hl-bg) 100%
-  );
-  padding-bottom: 0.05em;
-  /* box-decoration-break makes the gradient band render correctly when text
-     wraps across lines. The marketplace bot flags this as "partially supported
-     by Obsidian 1.4.5", but our minAppVersion is 1.5.0 (Chromium 116+) where
-     the -webkit- prefix is fully supported — safe to keep. */
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
+  background: none !important;
+  box-shadow: inset 0 -0.22em 0 var(--hl-bg, currentColor);
 }
 
 /* ----------------------------------------------------------------------- */
