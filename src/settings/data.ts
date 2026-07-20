@@ -68,10 +68,14 @@ export function builtinUnderlineCss(slug: BuiltinColorSlug): string {
 /**
  * Read the current computed theme color as #rrggbb for settings UI (disabled picker).
  * Falls back to a neutral gray when not in a browser / var missing.
+ * Uses Obsidian's `activeDocument` so popout windows resolve against their own DOM.
  */
 export function resolveBuiltinDisplayHex(slug: BuiltinColorSlug): string {
-	if (typeof document === 'undefined') return '#888888';
-	const raw = getComputedStyle(document.body).getPropertyValue(`--color-${slug}`).trim();
+	const doc: Document | undefined =
+		typeof activeDocument !== 'undefined' ? activeDocument :
+		typeof document !== 'undefined' ? document : undefined;
+	if (!doc) return '#888888';
+	const raw = getComputedStyle(doc.body).getPropertyValue(`--color-${slug}`).trim();
 	return cssColorToHex(raw) ?? '#888888';
 }
 

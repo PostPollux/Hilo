@@ -1,17 +1,13 @@
-import { Plugin } from 'obsidian';
+import { MarkdownView, Plugin } from 'obsidian';
 import type { EditorView } from '@codemirror/view';
 import { createColorMarkPostProcessor } from '../parser/readingView';
-import { createHighlightLivePreviewExtension } from '../parser/livePreview';
+import { createHighlightLivePreviewExtension, refreshDecorationsEffect } from '../parser/livePreview';
 import { buildContextMenuHandler } from './contextMenu';
 import { registerColorCommands, registerOpenPaletteCommand, registerUnhighlightCommand } from './commands';
 import { migrateSettings, type Settings } from '../settings/data';
 import { applyHighlightStyle, getColorMap, removeHighlightStyle, type HighlightColorVars } from '../settings/styleInjector';
 import { HighlightSettingTab } from '../settings/tab';
 import { detectLocale, setLocale } from '../i18n';
-
-interface WorkspaceWithCM {
-  iterateCodeMirrors(cb: (view: EditorView) => void): void;
-}
 
 export default class NativeHighlightPlugin extends Plugin {
   settings!: Settings;
@@ -53,13 +49,16 @@ export default class NativeHighlightPlugin extends Plugin {
   }
 
   private refreshEditors(): void {
-    try {
-      // internal API: iterateCodeMirrors — forces ViewPlugin to rebuild decorations
-      // so updated color map (bg/underline) takes effect without re-opening the file.
-      const ws = this.app.workspace as unknown as WorkspaceWithCM;
-      ws.iterateCodeMirrors?.((view: EditorView) => view.dispatch({}));
-    } catch {
-      /* internal API best-effort */
-    }
+    // Enumerate every open leaf (all windows including popouts) and dispatch the
+    // rebuild effect into each markdown editor's CM6 view. The effect is what the
+    // livePreview ViewPlugin's update guard watches — an empty transaction alone
+    // would not trip it. `iterateCodeMirrors` used to serve here but returned 0
+    // markdown views on recent Obsidian, hence this leaf-based enumeration.
+    this.app.workspace.iterateAllLeaves((leaf) => {
+      const view = leaf.view;
+      if (!(view instanceof MarkdownView)) return;
+      const cm = (view.editor as unknown as { cm?: EditorView }).cm;
+      cm?.dispatch({ effects: refreshDecorationsEffect.of(undefined) });
+    });
   }
 }

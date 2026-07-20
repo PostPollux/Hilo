@@ -1,6 +1,12 @@
 import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate } from '@codemirror/view';
-import { RangeSetBuilder, type Extension } from '@codemirror/state';
+import { RangeSetBuilder, StateEffect, type Extension } from '@codemirror/state';
 import type { HighlightColorVars } from '../settings/styleInjector';
+
+/** Fired by the plugin on settings save so the ViewPlugin below rebuilds its
+ *  decorations even when the transaction changed neither doc, viewport, nor
+ *  selection — otherwise `refreshEditors()`'s empty dispatch is a no-op and
+ *  color edits don't paint until the next unrelated view update. */
+export const refreshDecorationsEffect = StateEffect.define<void>();
 
 const HIGHLIGHT_RE = /==\{([a-z0-9][a-z0-9-]*)\}([^=\n]+(?:=[^=\n]+)*?)==/g;
 
@@ -60,7 +66,10 @@ export function createHighlightLivePreviewExtension(
 				this.decorations = buildDecorations(view, getColors());
 			}
 			update(u: ViewUpdate) {
-				if (u.docChanged || u.viewportChanged || u.selectionSet) {
+				const settingsRefresh = u.transactions.some((tr) =>
+					tr.effects.some((e) => e.is(refreshDecorationsEffect)),
+				);
+				if (u.docChanged || u.viewportChanged || u.selectionSet || settingsRefresh) {
 					this.decorations = buildDecorations(u.view, getColors());
 				}
 			}
