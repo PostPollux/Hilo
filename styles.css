@@ -24,6 +24,11 @@
 .od-color-row button.od-arrow:disabled {
   opacity: 0.4;
 }
+.od-color-row input:disabled,
+.od-color-row input[type="color"]:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
 .od-color-row .od-hotkey {
   display: inline-block;
   padding: 2px 6px;

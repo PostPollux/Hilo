@@ -53,11 +53,14 @@ Assign hotkeys in **Settings → Hotkeys**. Each color row in **Settings → Hil
 
 ### Color customization
 
-![Settings → Hilo — slug/hex/preview/hotkey per color, Highlight style dropdown, and a live preview of every style](assets/screenshots/demo-03-settings.png)
+![Settings → Hilo — Color palette dropdown, 8 theme-linked builtin colors with locked slug/hex, Highlight style dropdown, and a live preview of every style](assets/screenshots/demo-03-settings.png)
 
-- **Settings → Hilo** lets you add, edit, delete, reorder, and enable/disable colors.
-- Define any color as `slug` + `hex` (e.g. `yellow` + `#fff3a3`).
-- Disabled colors are hidden from menus but remain visually preserved in existing highlights.
+- **Color palette dropdown** — switch between two catalogs of colors:
+  - **Builtin (Theme)** — 8 colors tied to Obsidian's theme (`--color-red` through `--color-pink`). Change themes and highlights follow. Rows are locked (theme owns the values); you can still add your own custom colors on top.
+  - **Custom** — starts with 3 pastels (yellow / red / green); fully editable.
+- Both palettes coexist. Highlights written under one palette still render if you switch to another — the plugin merges color maps and lets the active palette win on slug conflicts.
+- **Per-color row** — enable/disable, reorder with arrows, edit slug + hex, assign a hotkey (⌨ jumps to Obsidian's Hotkeys page), or delete.
+- Disabled colors are hidden from menus but existing highlights keep rendering.
 
 ### Visual styles
 
@@ -75,7 +78,7 @@ Three ways to render highlights, switchable under **Settings → Hilo → Highli
 
   ![Underlined style — no fill, colored band only at the bottom edge](assets/screenshots/demo-06-style-underlined.png)
 
-Underlines use `box-shadow` (Lowlight) or `linear-gradient` (Underlined) instead of `text-decoration`, so they aren't overridden by Chromium's spellcheck.
+Both Lowlight and Underlined use `box-shadow` for the color band instead of `text-decoration`, so they aren't overridden by Chromium's spellcheck.
 
 ### Highlightr migration
 - The context menu also works on existing `<mark style="...">text</mark>` highlights.
@@ -117,9 +120,10 @@ The selection becomes `=={color}text==` and the color renders immediately.
 
 ### Add a color
 1. **Settings → Hilo**
-2. Click **Add color**
-3. Enter a slug (e.g. `pink`) and a hex value (e.g. `#ffc0cb`)
-4. The new color is available in every view immediately.
+2. Pick a palette (Builtin accepts additions on top of the 8 theme colors; Custom is fully editable)
+3. Click **Add color**
+4. Enter a slug (e.g. `pink`) and a hex value (e.g. `#ffc0cb`)
+5. The new color is available in every view immediately.
 
 ### Migrating from Highlightr
 Place the cursor on an existing `<mark>` highlight and right-click — the same menu appears. Use **Change color** to convert it to the Hilo token format, or **Unhighlight** to remove it.
@@ -132,7 +136,7 @@ Hilo's output format is the single inline form `=={color}content==`.
 
 - The color slug is lowercase alphanumeric plus hyphens (e.g. `yellow`, `red`, `1st`, `2nd`, `soft-blue`).
 - The slug may start with a letter or a digit.
-- If the slug isn't in your settings catalog, the token is still valid but renders without color (text appears uncolored).
+- If the slug isn't in your settings catalog, the highlight falls back to Obsidian's native `==text==` yellow — no broken rendering, just an untinted visible highlight.
 
 > **Exporting outside Obsidian**: external markdown renderers may show the `{color}` token as literal text. If you publish to such renderers, strip tokens before export (automatic stripping is a future option).
 
