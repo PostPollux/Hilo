@@ -106,7 +106,9 @@ export function compensateForReadability(hex: string, mode: ReadabilityMode): st
  *  palette keep rendering after a switch. On slug conflicts the active palette wins. */
 export function getColorMap(settings: Settings): Map<string, HighlightColorVars> {
 	const map = new Map<string, HighlightColorVars>();
-	const mode = settings.autoReadability !== false ? getThemeMode() : null;
+	const readabilityOff = settings.autoReadability === false;
+	const underlined = settings.style === 'underlined';
+	const mode = (readabilityOff || underlined) ? null : getThemeMode();
 	const ordered = [
 		...settings.palettes.filter((p) => p.id !== settings.activePalette),
 		...settings.palettes.filter((p) => p.id === settings.activePalette),

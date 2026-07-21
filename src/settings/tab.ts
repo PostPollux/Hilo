@@ -105,16 +105,17 @@ export class HighlightSettingTab extends PluginSettingTab {
 
 		const previewEl = styleSetting.descEl.createDiv({ cls: 'od-style-preview-list' });
 		const color = this.getFirstColor();
-		const samples: HTMLSpanElement[] = [];
+		const samples: { el: HTMLSpanElement; style: HighlightStyle }[] = [];
 		const applyPreviewColors = () => {
 			if (!color) return;
-			const bg = this.plugin.settings.autoReadability !== false
-				? compensateForReadability(color.hex, getThemeMode())
-				: color.hex;
-			const underline = darkerUnderline(bg);
-			for (const sample of samples) {
-				sample.style.setProperty('--hl-bg', bg);
-				sample.style.setProperty('--hl-underline', underline);
+			const readabilityOn = this.plugin.settings.autoReadability !== false;
+			const mode = getThemeMode();
+			for (const { el, style } of samples) {
+				const compensated = style === 'underlined' || !readabilityOn
+					? color.hex
+					: compensateForReadability(color.hex, mode);
+				el.style.setProperty('--hl-bg', compensated);
+				el.style.setProperty('--hl-underline', darkerUnderline(compensated));
 			}
 		};
 		for (const style of STYLES) {
@@ -125,7 +126,7 @@ export class HighlightSettingTab extends PluginSettingTab {
 				cls: 'od-preview-sample',
 				text: t(`settings.style.options.${style}`),
 			});
-			samples.push(sample);
+			samples.push({ el: sample, style });
 		}
 		applyPreviewColors();
 
